@@ -4,7 +4,11 @@ financial crawler
 # Rakuten Crawler
 ## usage
 ```
-python rakuten_crawler.py YOUR-USER-ID YOUR-USER-PASS [--outdir <dir>]
+python rakuten_crawler.py YOUR-USER-ID YOUR-PASSWORD [--outdir <dir>]
+```
+or
+```
+python rakuten_crawler.py YOUR-USER-ID `openssl rsautl -decrypt -inkey ~/.ssh/id_rsa -in secretfile` [--outdir <dir>]
 ```
 
 
@@ -15,7 +19,7 @@ ssh-keygen -t rsa
 ssh-keygen -e -m PKCS8 -f ~/.ssh/id_rsa.pub  > ~/.ssh/id_rsa.pub.pem
 ```
 
-## generate your encrypted password file
+## generate encrypted password file
 ```
 echo "your-password" | openssl rsautl -encrypt -pubin -inkey ~/.ssh/id_rsa.pub.pem -out secretfile
 ```
