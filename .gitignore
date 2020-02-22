@@ -129,4 +129,7 @@ dmypy.json
 .pyre/
 
 #
-*.png
+file/*/*.png
+log/*.log*
+file/*.txt
+file/*.csv
