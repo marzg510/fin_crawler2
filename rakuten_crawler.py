@@ -4,6 +4,7 @@ import logging,logging.handlers
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import sys
+from argparse import ArgumentParser
 
 OUTDIR_SS='./file/ss/'
 OUTDIR='./file/'
@@ -29,16 +30,22 @@ log.addHandler(h)
 
 log.info("start")
 
-args = sys.argv
-user_id = args[1]
-passwd = args[2]
+# 引数解析
+usage = 'Usage: python {} USER_ID PASSWORD [--outdir <dir>] [--help]'.format(__file__)
+parser = ArgumentParser(usage=usage)
+parser.add_argument('user_id', type=str, help='USER ID')
+parser.add_argument('passwd', type=str, help='PASSWORD')
+parser.add_argument('-o', '--outdir', type=str, help='file output directory', default=OUTDIR)
+args = parser.parse_args()
+user_id = args.user_id
+passwd = args.passwd
+outdir = args.outdir
 
 # ブラウザを起動
 options = Options()
 options.add_argument('--headless')
 driver = webdriver.Chrome(chrome_options=options)
 driver.set_page_load_timeout(5)
-
 
 # windowサイズを変更
 win_size = driver.get_window_size()
@@ -66,8 +73,6 @@ log.info("navigate to bill-detail..")
 #e_link = driver.find_element_by_xpath('//div[@class="is-fix"]/a[text()="明細を見る"]')
 e_link = driver.find_element_by_xpath('//ul[@class="rce-u-list-plain"]//a[text()="ご利用明細"]')
 log.debug('link for detail : tag={} href={} visible={}'.format(e_link.tag_name, e_link.get_attribute('href'),e_link.is_displayed()))
-# スクロール
-#driver.execute_script('arguments[0].scrollIntoView(true);', e_link)
 ss(driver,25,'detail_link')
 # ご利用明細
 e_link.click()
@@ -84,15 +89,6 @@ log.info("downloading csv..")
 e_csv_link = driver.find_element_by_xpath('//a[contains(.,"CSV")]')
 log.debug('link for csv : tag={} href={}'.format(e_csv_link.tag_name, e_csv_link.get_attribute('href')))
 
-# スクロール
-#from selenium.webdriver.common.action_chains import ActionChains
-#actions = ActionChains(driver)
-#actions.move_to_element(e_csv_link)
-#actions.perform()
-#driver.execute_script('arguments[0].scrollIntoView(true);', e_csv_link) 
-#ss(driver,40,'csv_link')
-
-
 # ダウンロード可能にする
 driver.command_executor._commands["send_command"] = (
     "POST",
@@ -102,7 +98,7 @@ params = {
     'cmd': 'Page.setDownloadBehavior',
     'params': {
         'behavior': 'allow',
-        'downloadPath': OUTDIR
+        'downloadPath': outdir
     }
 }
 driver.execute("send_command", params=params)
@@ -127,77 +123,9 @@ e_mark = e_bill.find_element_by_xpath('mark')
 log.debug('mark : tag={} text={}'.format(e_mark.tag_name, e_mark.text))
 e_amount = e_bill.find_element_by_xpath('div[@class="stmt-bill-info-amount__num"]')
 log.debug('amount : tag={} text={}'.format(e_amount.tag_name, e_amount.text))
-with open('{}/{}_{}.txt'.format(OUTDIR,e_month.text,e_mark.text), 'wt') as fout:
+with open('{}/{}_{}.txt'.format(outdir,e_month.text,e_mark.text), 'wt') as fout:
     fout.write(e_amount.text)
-
 
 log.info("end")
 exit()
-
-
-# In[133]:
-
-e_next_link.get_attribute('href')
-
-
-# In[135]:
-
-e_next_link.click()
-
-
-# In[136]:
-
-driver.get_screenshot_as_file('/tmp/chrome.png')
-display_png(Image('/tmp/chrome.png'))
-
-
-# In[137]:
-
-# CSVダウンロードのリンクを探す
-e_csv_link = driver.find_element_by_xpath('//a[contains(.,"CSV")]')
-
-
-# In[138]:
-
-e_csv_link.get_attribute('href')
-
-
-# In[139]:
-
-e_csv_link.is_displayed()
-
-
-# In[140]:
-
-# スクロール
-from selenium.webdriver.common.action_chains import ActionChains
-actions = ActionChains(driver)
-actions.move_to_element(e_csv_link)
-actions.perform()
-
-
-# In[141]:
-
-driver.get_screenshot_as_file('/tmp/chrome.png')
-display_png(Image('/tmp/chrome.png'))
-
-
-# In[142]:
-
-e_csv_link.click()
-
-
-# In[143]:
-
-get_ipython().system('ls')
-
-
-# In[95]:
-
-driver.quit()
-
-
-# In[ ]:
-
-
 
