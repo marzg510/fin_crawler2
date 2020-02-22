@@ -3,19 +3,27 @@ financial crawler
 
 # Rakuten Crawler
 ## usage
-python rakuten_crawler.py your-user-id your-password
+```
+python rakuten_crawler.py YOUR-USER-ID YOUR-USER-PASS [--outdir <dir>]
+```
 
 
-# encrypt password
+# Password Encrypt Hint(for Linux)
 ## prepare(generate key pair)
+```
 ssh-keygen -t rsa
 ssh-keygen -e -m PKCS8 -f ~/.ssh/id_rsa.pub  > ~/.ssh/id_rsa.pub.pem
+```
 
-## generate your encrypted password
+## generate your encrypted password file
+```
 echo "your-password" | openssl rsautl -encrypt -pubin -inkey ~/.ssh/id_rsa.pub.pem -out secretfile
+```
 
 ## use password file
+```
 echo `openssl rsautl -decrypt -inkey ~/.ssh/id_rsa -in secretfile`
+```
 
 ## see also
 https://qiita.com/kugyu10/items/b27d99f6df67a3b6c348
