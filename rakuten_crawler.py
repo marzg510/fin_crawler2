@@ -3,8 +3,10 @@
 import logging,logging.handlers
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+import sys
 
 OUTDIR_SS='./file/ss/'
+OUTDIR='./file/'
 LOGDIR='./log/'
 
 def ss(driver,seq,name=None):
@@ -27,125 +29,69 @@ log.addHandler(h)
 
 log.info("start")
 
+args = sys.argv
+user_id = args[1]
+passwd = args[2]
+
 # ブラウザを起動
 options = Options()
 options.add_argument('--headless')
 driver = webdriver.Chrome(chrome_options=options)
 driver.set_page_load_timeout(5)
+
+
 # windowサイズを変更
 win_size = driver.get_window_size()
-#win_size['width']
-driver.set_window_size(win_size['width'],win_size['height']+200)
+driver.set_window_size(win_size['width']+200,win_size['height']+400)
 
 # 楽天ログイン画面
 log.info("getting login page")
 driver.get('https://www.rakuten-card.co.jp/e-navi/')
-ss(driver,1,'login')
+ss(driver,10,'login')
 
 # ログイン
 log.info("logging in to the site...")
 e_user = driver.find_element_by_id('u')
 e_password = driver.find_element_by_id('p')
-e_user.send_keys('******')
-e_password.send_keys('******')
+e_user.send_keys(user_id)
+e_password.send_keys(passwd)
 e_button = driver.find_element_by_id('loginButton')
+ss(driver,15,'before-login')
 e_button.click()
-ss(driver,2,'top')
+ss(driver,20,'top')
 
-
-
-
-log.info("end")
-exit()
-
-
-
-# In[106]:
 
 # ご利用明細へのリンクを探す
-e_link = driver.find_element_by_xpath('//div[@class="is-fix"]/a[text()="明細を見る"]')
-
-
-# In[107]:
-
-e_link.tag_name
-
-
-# In[108]:
-
-e_link.get_attribute('href')
-
-
-# In[109]:
-
-e_link.is_displayed()
-
-
-# In[110]:
-
+log.info("navigate to bill-detail..")
+#e_link = driver.find_element_by_xpath('//div[@class="is-fix"]/a[text()="明細を見る"]')
+e_link = driver.find_element_by_xpath('//ul[@class="rce-u-list-plain"]//a[text()="ご利用明細"]')
+log.debug('link for detail : tag={} href={} visible={}'.format(e_link.tag_name, e_link.get_attribute('href'),e_link.is_displayed()))
+# スクロール
+#driver.execute_script('arguments[0].scrollIntoView(true);', e_link)
+ss(driver,25,'detail_link')
 # ご利用明細
 e_link.click()
-
-
-# In[111]:
-
-driver.get_screenshot_as_file('/tmp/chrome.png')
-display_png(Image('/tmp/chrome.png'))
-
-
-# In[112]:
+#driver.get(e_link.get_attribute('href'))
+ss(driver,30,'detail')
 
 # 確定かどうか判定
-e_bill = driver.find_element_by_xpath('//div[@class="stmt-bill-info-amount__main"]/span')
+e_bill = driver.find_element_by_xpath('//div[@class="stmt-bill-info-amount__main"]/mark')
+log.debug('bill-text:{}'.format(e_bill.text))
 
-
-# In[113]:
-
-e_bill.text
-
-
-# In[114]:
 
 # CSVダウンロードのリンクを探す
+log.info("downloading csv..")
 e_csv_link = driver.find_element_by_xpath('//a[contains(.,"CSV")]')
-
-
-# In[115]:
-
-e_csv_link.get_attribute('href')
-
-
-# In[116]:
-
-e_csv_link.is_displayed()
-
-
-# In[120]:
+log.debug('link for csv : tag={} href={}'.format(e_csv_link.tag_name, e_csv_link.get_attribute('href')))
 
 # スクロール
-from selenium.webdriver.common.action_chains import ActionChains
-actions = ActionChains(driver)
-actions.move_to_element(e_csv_link)
-actions.perform()
+#from selenium.webdriver.common.action_chains import ActionChains
+#actions = ActionChains(driver)
+#actions.move_to_element(e_csv_link)
+#actions.perform()
+#driver.execute_script('arguments[0].scrollIntoView(true);', e_csv_link) 
+#ss(driver,40,'csv_link')
 
-
-# In[121]:
-
-driver.get_screenshot_as_file('/tmp/chrome.png')
-display_png(Image('/tmp/chrome.png'))
-
-
-# In[122]:
-
-
-
-# In[123]:
-
-driver.get_screenshot_as_file('/tmp/chrome.png')
-display_png(Image('/tmp/chrome.png'))
-
-
-# In[127]:
 
 # ダウンロード可能にする
 driver.command_executor._commands["send_command"] = (
@@ -156,35 +102,40 @@ params = {
     'cmd': 'Page.setDownloadBehavior',
     'params': {
         'behavior': 'allow',
-        'downloadPath': '.'
+        'downloadPath': OUTDIR
     }
 }
 driver.execute("send_command", params=params)
 
+# download csv
+driver.get(e_csv_link.get_attribute('href'))
+ss(driver,50,'csv_downloaded')
 
-# In[128]:
+# 次月が押せたら次月を押す
+log.info("navigate to next month ..")
+e_next_link = driver.find_element_by_xpath('//a[text()="次月"]')
+log.debug('link for next month : tag={} href={} visible={}'.format(e_next_link.tag_name, e_next_link.get_attribute('href'),e_next_link.is_displayed()))
+e_next_link.click()
+ss(driver,60,'next_month')
 
-e_csv_link.click()
+# 支払い予定金額出力
+log.info("write expence ..")
+e_month = driver.find_element_by_xpath('//div[@class="stmt-calendar__cmd__now"]')
+log.debug('month : tag={} text={}'.format(e_month.tag_name, e_month.text))
+e_bill = driver.find_element_by_xpath('//div[@class="stmt-bill-info-amount__main"]')
+e_mark = e_bill.find_element_by_xpath('mark')
+log.debug('mark : tag={} text={}'.format(e_mark.tag_name, e_mark.text))
+e_amount = e_bill.find_element_by_xpath('div[@class="stmt-bill-info-amount__num"]')
+log.debug('amount : tag={} text={}'.format(e_amount.tag_name, e_amount.text))
+with open('{}/{}_{}.txt'.format(OUTDIR,e_month.text,e_mark.text), 'wt') as fout:
+    fout.write(e_amount.text)
 
 
-# In[129]:
-
-driver.get_screenshot_as_file('/tmp/chrome.png')
-display_png(Image('/tmp/chrome.png'))
-
-
-# In[130]:
-
-get_ipython().system('ls')
+log.info("end")
+exit()
 
 
 # In[133]:
-
-# 次月が押せたら次月を押す
-e_next_link = driver.find_element_by_xpath('//a[text()="次月"]')
-
-
-# In[134]:
 
 e_next_link.get_attribute('href')
 
