@@ -11,6 +11,19 @@ OUTDIR_SS='./file/ss/'
 OUTDIR='./file/'
 LOGDIR='./log/'
 
+def write_future_expence(driver, outdir):
+    global log
+    log.info("write expence ..")
+    e_month = driver.find_element_by_xpath('//div[@class="stmt-calendar__cmd__now"]')
+    log.debug('month : tag={} text={}'.format(e_month.tag_name, e_month.text))
+    e_bill = driver.find_element_by_xpath('//div[@class="stmt-bill-info-amount__main"]')
+    e_mark = e_bill.find_element_by_xpath('mark')
+    log.debug('mark : tag={} text={}'.format(e_mark.tag_name, e_mark.text))
+    e_amount = e_bill.find_element_by_xpath('div[@class="stmt-bill-info-amount__num"]')
+    log.debug('amount : tag={} text={}'.format(e_amount.tag_name, e_amount.text))
+    with open('{}/{}_{}.txt'.format(outdir,e_month.text,e_mark.text), 'wt') as fout:
+        fout.write(e_amount.text)
+
 # ログ設定
 log = logging.getLogger('rakuten_crawler')
 log.setLevel(logging.DEBUG)
@@ -73,6 +86,12 @@ helper.ss(name='detail')
 e_bill = driver.find_element_by_xpath('//div[@class="stmt-bill-info-amount__main"]/mark')
 log.debug('bill-text:{}'.format(e_bill.text))
 
+# 未確定なら支払い予定額を保存
+if '未確定' in e_bill.text:
+    write_future_expence(driver, outdir)
+    log.info("end")
+    exit()
+
 # CSVダウンロードのリンクを探す
 log.info("downloading csv..")
 e_csv_link = driver.find_element_by_xpath('//a[contains(.,"CSV")]')
@@ -104,16 +123,7 @@ e_next_link.click()
 helper.ss(name='next_month')
 
 # 支払い予定金額出力
-log.info("write expence ..")
-e_month = driver.find_element_by_xpath('//div[@class="stmt-calendar__cmd__now"]')
-log.debug('month : tag={} text={}'.format(e_month.tag_name, e_month.text))
-e_bill = driver.find_element_by_xpath('//div[@class="stmt-bill-info-amount__main"]')
-e_mark = e_bill.find_element_by_xpath('mark')
-log.debug('mark : tag={} text={}'.format(e_mark.tag_name, e_mark.text))
-e_amount = e_bill.find_element_by_xpath('div[@class="stmt-bill-info-amount__num"]')
-log.debug('amount : tag={} text={}'.format(e_amount.tag_name, e_amount.text))
-with open('{}/{}_{}.txt'.format(outdir,e_month.text,e_mark.text), 'wt') as fout:
-    fout.write(e_amount.text)
+write_future_expence(driver, outdir)
 
 log.info("end")
 exit()
