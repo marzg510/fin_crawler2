@@ -133,4 +133,6 @@ file/*/*.png
 log/*.log*
 file/*.txt
 file/*.csv
-secretfile
+*secret*
+test-*
+mtest*
