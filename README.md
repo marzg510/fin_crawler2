@@ -11,6 +11,16 @@ or
 python rakuten_crawler.py YOUR-USER-ID `openssl rsautl -decrypt -inkey ~/.ssh/id_rsa -in secretfile` [--outdir <dir>]
 ```
 
+# VIEW Card Crawler
+## usage
+```
+python view_crawler.py YOUR-USER-ID YOUR-PASSWORD [--outdir <dir>]
+```
+or
+```
+python rakuten_crawler.py YOUR-USER-ID `openssl rsautl -decrypt -inkey ~/.ssh/id_rsa -in secretfile` [--outdir <dir>]
+```
+
 
 # Password Encrypt Hint(for Linux)
 ## prepare(generate key pair)
@@ -21,7 +31,7 @@ ssh-keygen -e -m PKCS8 -f ~/.ssh/id_rsa.pub  > ~/.ssh/id_rsa.pub.pem
 
 ## generate encrypted password file
 ```
-echo "your-password" | openssl rsautl -encrypt -pubin -inkey ~/.ssh/id_rsa.pub.pem -out secretfile
+echo "yourpassword" | openssl rsautl -encrypt -pubin -inkey ~/.ssh/id_rsa.pub.pem -out secretfile
 ```
 
 ## use password file
