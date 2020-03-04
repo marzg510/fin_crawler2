@@ -10,7 +10,6 @@ import time
 OUTDIR_SS='./file/ss_view'
 OUTDIR='./file/'
 LOGDIR='./log/'
-#TERMINAL_NAME = 'クローラー'
 
 # ログ設定
 ap_name = os.path.splitext(os.path.basename(__file__))[0]
@@ -28,12 +27,10 @@ parser = ArgumentParser(usage=usage)
 parser.add_argument('user_id', type=str, help='USER ID')
 parser.add_argument('passwd', type=str, help='PASSWORD')
 parser.add_argument('-o', '--outdir', type=str, help='file output directory', default=OUTDIR)
-#parser.add_argument('-u', '--url', type=str, help='login url')
 args = parser.parse_args()
 user_id = args.user_id
 passwd = args.passwd
 outdir = args.outdir
-#login_url = args.url
 
 driver = helper.start_browser()
 helper.outdir_ss = OUTDIR_SS
