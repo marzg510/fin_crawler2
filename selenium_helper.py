@@ -2,10 +2,12 @@
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+import os
 
 outdir_ss = './file/ss/'
 driver = None
 ss_seq = 1
+is_save_html_with_ss = False
 
 class SeleniumHelper():
     def __init__(self, driver, ss_outdir):
@@ -56,9 +58,23 @@ def ss(seq=None, name='ss'):
     global driver
     global ss_seq
     seq = ss_seq if seq is None else seq
-    fname = '{}/{}_{}.png'.format(outdir_ss,seq,name)
+    fname = os.path.join(outdir_ss,'{}_{}.png'.format(seq,name))
     driver.get_screenshot_as_file(fname)
+    if is_save_html_with_ss:
+        ps(seq,name)
     ss_seq += 1
+    return fname
+
+def ps(seq=None, name='ss'):
+    '''
+    HTMLソースを保存
+    '''
+    global driver
+    global ss_seq
+    seq = ss_seq if seq is None else seq
+    fname = os.path.join(outdir_ss,'{}_{}.html'.format(seq,name))
+    with open(fname, 'wt') as out:
+        out.write(driver.page_source)
     return fname
 
 if __name__ == '__main__':
