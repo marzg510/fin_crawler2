@@ -1,14 +1,10 @@
 # fin_crawler2
-financial crawler
+financial crawlers
 
 # Rakuten Crawler
 ## usage
 ```
 python rakuten_crawler.py YOUR-USER-ID YOUR-PASSWORD [--outdir <dir>]
-```
-or
-```
-python rakuten_crawler.py YOUR-USER-ID `openssl rsautl -decrypt -inkey ~/.ssh/id_rsa -in secretfile` [--outdir <dir>]
 ```
 
 # VIEW Card Crawler
@@ -16,11 +12,12 @@ python rakuten_crawler.py YOUR-USER-ID `openssl rsautl -decrypt -inkey ~/.ssh/id
 ```
 python view_crawler.py YOUR-USER-ID YOUR-PASSWORD [--outdir <dir>]
 ```
-or
-```
-python rakuten_crawler.py YOUR-USER-ID `openssl rsautl -decrypt -inkey ~/.ssh/id_rsa -in secretfile` [--outdir <dir>]
-```
 
+# AEON Card Crawler
+## usage
+```
+python aeon_crawler.py YOUR-USER-ID YOUR-PASSWORD [--outdir <dir>]
+```
 
 # Password Encrypt Hint(for Linux)
 ## prepare(generate key pair)
