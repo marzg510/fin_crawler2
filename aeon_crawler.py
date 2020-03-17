@@ -14,7 +14,7 @@ TERMINAL_NAME = 'クローラーＰＹ'
 ap_name = os.path.splitext(os.path.basename(__file__))[0]
 log = logging.getLogger(ap_name)
 log.setLevel(logging.DEBUG)
-h = logging.handlers.TimedRotatingFileHandler('{}/{}.log'.format(LOGDIR,ap_name),'D',1,13)
+h = logging.handlers.TimedRotatingFileHandler('{}/{}.log'.format(LOGDIR,ap_name),'D',2,13)
 h.setFormatter(logging.Formatter("%(asctime)s %(levelname)s %(name)s %(message)s"))
 log.addHandler(h)
 
@@ -141,6 +141,8 @@ with open(os.path.join(outdir,'最近のご利用明細.txt'), 'wt') as out:
         log.debug(l)
         out.write(l+'\n')
 
+driver.close()
+driver.quit()
 log.info("end")
 sys.exit()
 

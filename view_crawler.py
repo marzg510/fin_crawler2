@@ -15,7 +15,7 @@ LOGDIR='./log/'
 ap_name = os.path.splitext(os.path.basename(__file__))[0]
 log = logging.getLogger(ap_name)
 log.setLevel(logging.DEBUG)
-h = logging.handlers.TimedRotatingFileHandler('{}/{}.log'.format(LOGDIR,ap_name),'D',1,13)
+h = logging.handlers.TimedRotatingFileHandler('{}/{}.log'.format(LOGDIR,ap_name),'D',2,13)
 h.setFormatter(logging.Formatter("%(asctime)s %(levelname)s %(name)s %(message)s"))
 log.addHandler(h)
 
@@ -109,6 +109,8 @@ with open(fbill_file, 'wt') as fout:
     for e_tr in e_trs:
         fout.write('{}\n'.format(e_tr.text.replace('\n',' ').replace('\r','')))
 
+driver.close()
+driver.quit()
 log.info("end")
 exit()
 

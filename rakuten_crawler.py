@@ -28,7 +28,7 @@ def write_future_expence(driver, outdir):
 log = logging.getLogger('rakuten_crawler')
 log.setLevel(logging.DEBUG)
 #    h = logging.StreamHandler()
-h = logging.handlers.TimedRotatingFileHandler('{}/rakuten_crawler.log'.format(LOGDIR),'D',1,13)
+h = logging.handlers.TimedRotatingFileHandler('{}/rakuten_crawler.log'.format(LOGDIR),'D',2,13)
 h.setFormatter(logging.Formatter("%(asctime)s %(levelname)s %(name)s %(message)s"))
 log.addHandler(h)
 
@@ -83,7 +83,7 @@ e_link.click()
 helper.ss(name='detail')
 
 # 確定かどうか判定
-e_bill = driver.find_element_by_xpath('//div[@class="stmt-bill-info-amount__main"]/mark')
+e_bill = driver.find_element_by_xpath('//div[@class="stmt-bill-info-amount__main"]/span[contains(@class,"mark")]')
 log.debug('bill-text:{}'.format(e_bill.text))
 
 # 未確定なら支払い予定額を保存
@@ -125,6 +125,8 @@ helper.ss(name='next_month')
 # 支払い予定金額出力
 write_future_expence(driver, outdir)
 
+driver.close()
+driver.quit()
 log.info("end")
 exit()
 
