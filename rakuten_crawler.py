@@ -83,7 +83,8 @@ e_link.click()
 helper.ss(name='detail')
 
 # 確定かどうか判定
-e_bill = driver.find_element_by_xpath('//div[@class="stmt-bill-info-amount__main"]/span[contains(@class,"mark")]')
+#e_bill = driver.find_element_by_xpath('//div[@class="stmt-bill-info-amount__main"]/span[contains(@class,"mark")]')
+e_bill = driver.find_element_by_xpath('//div[@class="stmt-bill-info-amount__main"]/*[contains(@class,"mark")]')
 log.debug('bill-text:{}'.format(e_bill.text))
 
 # 未確定なら支払い予定額を保存
