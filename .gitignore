@@ -138,3 +138,4 @@ file/*.csv
 *secret*
 test-*
 mtest*
+file/ss*/*/

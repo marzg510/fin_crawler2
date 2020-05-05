@@ -40,7 +40,6 @@ outdir = args.outdir
 log.info("user_id={} {}".format(user1,user2))
 log.info("account={}".format(account))
 log.info("outdir={}".format(outdir))
-log.info("outdir_ss={}".format(helper.outdir_ss))
 
 outfile = os.path.join(outdir, 'smbc_{}_{}.csv'.format(account, time.strftime('%Y%m%d',time.localtime())))
 log.info ("outfile=%s" % outfile)
@@ -48,7 +47,8 @@ log.info ("outfile=%s" % outfile)
 # 処理開始
 try:
     driver = helper.start_browser()
-    helper.outdir_ss = OUTDIR_SS
+    helper.outdir_ss = os.path.join(OUTDIR_SS, account)
+    log.info("outdir_ss={}".format(helper.outdir_ss))
     helper.set_download(outdir)
     helper.is_save_html_with_ss = True
 
