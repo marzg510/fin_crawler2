@@ -8,28 +8,31 @@ outdir_ss = './file/ss/'
 driver = None
 ss_seq = 1
 is_save_html_with_ss = False
+user_agent = ''
 
-class SeleniumHelper():
-    def __init__(self, driver, ss_outdir):
-        self.driver = driver
-        self.ss_outdir = ss_outdir
-        self.seq = 1
-    def ss(self, seq=None, name='ss'):
-        '''
-        スクリーンショットを撮る
-        '''
-        out_seq = self.seq if seq is None else seq
-        fname = '{}/{}_{}.png'.format(self.ss_outdir,out_seq,name)
+#class SeleniumHelper():
+#    def __init__(self, driver, ss_outdir):
+#        self.driver = driver
+#        self.ss_outdir = ss_outdir
+#        self.seq = 1
+#    def ss(self, seq=None, name='ss'):
+#        '''
+#        スクリーンショットを撮る
+#        '''
+#        out_seq = self.seq if seq is None else seq
+#        fname = '{}/{}_{}.png'.format(self.ss_outdir,out_seq,name)
 #        log.debug("ss fname ={}".format(fname))
-        self.driver.get_screenshot_as_file(fname)
-        self.seq += 1
-        return fname
+#        self.driver.get_screenshot_as_file(fname)
+#        self.seq += 1
+#        return fname
 
 def start_browser():
     global driver
     options = Options()
     options.add_argument('--headless')
-    driver = webdriver.Chrome(chrome_options=options)
+    if user_agent != '':
+        options.add_argument('--user-agent='+user_agent)
+    driver = webdriver.Chrome(options=options)
     driver.set_page_load_timeout(10)
     # windowサイズを変更
     win_size = driver.get_window_size()
