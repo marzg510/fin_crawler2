@@ -3,9 +3,8 @@
 import logging,logging.handlers
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-import sys
+import sys,os
 from argparse import ArgumentParser
-from selenium_helper import SeleniumHelper
 import selenium_helper as helper
 
 OUTDIR_SS='./file/ss/'
@@ -14,7 +13,7 @@ LOGDIR='./log/'
 
 def write_future_expence(driver, outdir):
     global log
-    log.info("write expence ..")
+    log.info("write furure expence to %s" % outdir)
     e_month = driver.find_element_by_xpath('//div[@class="stmt-calendar__cmd__now"]')
     log.debug('month : tag={} text={}'.format(e_month.tag_name, e_month.text))
     e_bill = driver.find_element_by_xpath('//div[@class="stmt-bill-info-amount__main"]')
@@ -22,14 +21,14 @@ def write_future_expence(driver, outdir):
     log.debug('mark : tag={} text={}'.format(e_mark.tag_name, e_mark.text))
     e_amount = e_bill.find_element_by_xpath('div[@class="stmt-bill-info-amount__num"]')
     log.debug('amount : tag={} text={}'.format(e_amount.tag_name, e_amount.text))
-    with open('{}/{}_{}.txt'.format(outdir,e_month.text,e_mark.text), 'wt') as fout:
+    with open(os.path.join(outdir,'%s_%s.txt' % (e_month.text,e_mark.text)), 'wt') as fout:
         fout.write(e_amount.text)
 
 # ログ設定
-log = logging.getLogger('rakuten_crawler')
+ap_name = os.path.splitext(os.path.basename(__file__))[0]
+log = logging.getLogger(ap_name)
 log.setLevel(logging.DEBUG)
-#    h = logging.StreamHandler()
-h = logging.handlers.TimedRotatingFileHandler('{}/rakuten_crawler.log'.format(LOGDIR),'D',2,13)
+h = logging.handlers.TimedRotatingFileHandler('{}/{}.log'.format(LOGDIR,ap_name),'D',2,13)
 h.setFormatter(logging.Formatter("%(asctime)s %(levelname)s %(name)s %(message)s"))
 log.addHandler(h)
 
@@ -50,19 +49,12 @@ helper.outdir_ss = OUTDIR_SS
 helper.is_save_html_with_ss = True;
 log.info("outdir_ss={}".format(helper.outdir_ss))
 
+# 処理開始
 try:
     # ブラウザを起動
     driver = helper.start_browser()
-#    options = Options()
-#    options.add_argument('--headless')
-#    driver = webdriver.Chrome(chrome_options=options)
     driver.set_page_load_timeout(30)
-
-    # windowサイズを変更
-#    win_size = driver.get_window_size()
-#    driver.set_window_size(win_size['width']+200,win_size['height']+400)
-
-#    helper = SeleniumHelper(driver, OUTDIR_SS)
+    helper.set_download(outdir)
 
     # 楽天ログイン画面
     log.info("getting login page")
@@ -104,20 +96,6 @@ try:
     log.info("downloading csv..")
     e_csv_link = driver.find_element_by_xpath('//a[contains(.,"CSV")]')
     log.debug('link for csv : tag={} href={}'.format(e_csv_link.tag_name, e_csv_link.get_attribute('href')))
-
-    # ダウンロード可能にする
-    driver.command_executor._commands["send_command"] = (
-        "POST",
-        '/session/$sessionId/chromium/send_command'
-    )
-    params = {
-        'cmd': 'Page.setDownloadBehavior',
-        'params': {
-            'behavior': 'allow',
-            'downloadPath': outdir
-        }
-    }
-    driver.execute("send_command", params=params)
 
     # download csv
     driver.get(e_csv_link.get_attribute('href'))
