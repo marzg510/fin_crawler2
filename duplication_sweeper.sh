@@ -1,6 +1,6 @@
 #!/bin/bash
 . $(dirname $0)/logger.sh
-OUT_STDOUT=1
+#OUT_STDOUT=1
 TARGET_DIR=${1:-.}
 
 DAYS=60
