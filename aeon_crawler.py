@@ -122,10 +122,14 @@ try:
 
     # CSVダウンロード
     log.info("downloading csv..")
-    e_csv_link = driver.find_element_by_xpath('//a[text()="今月分(CSV形式)のダウンロード"]')
-    log.debug('link for csv : tag={} href={}'.format(e_csv_link.tag_name, e_csv_link.get_attribute('href')))
-    e_csv_link.click()
-    helper.ss(name='csv_downloaded')
+    e_csv_links = driver.find_elements_by_xpath('//a[text()="今月分(CSV形式)のダウンロード"]')
+    if len(e_csv_links) > 0:
+        e_csv_link = e_csv_links[0]
+        log.debug('link for csv : tag={} href={}'.format(e_csv_link.tag_name, e_csv_link.get_attribute('href')))
+        e_csv_link.click()
+        helper.ss(name='csv_downloaded')
+    else:
+        log.info("no csv links, can't download csv.")
 
     # 最近の請求金額へ
     log.info("navigate to latest bill ..")
