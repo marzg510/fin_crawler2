@@ -8,9 +8,10 @@ import selenium_helper as helper
 import time
 import selenium.common.exceptions
 
-OUTDIR_SS='./file/ss_yuucho'
-OUTDIR='./file/'
-LOGDIR='./log/'
+thisdir = os.path.dirname(__file__)
+OUTDIR_SS=os.path.join(thisdir,'./file/ss_yuucho')
+OUTDIR=os.path.join(thisdir,'./file/')
+LOGDIR=os.path.join(thisdir,'./log/')
 
 # ログ設定
 ap_name = os.path.splitext(os.path.basename(__file__))[0]
@@ -21,10 +22,8 @@ h = logging.handlers.TimedRotatingFileHandler(os.path.join(LOGDIR,'%s.log' % ap_
 h.setFormatter(log_format)
 log.addHandler(h)
 h = logging.StreamHandler()
-h.setFormatter(log_format)
+#h.setFormatter(log_format)
 log.addHandler(h)
-
-log.info("start")
 
 # 引数解析
 usage = 'Usage: python %s USER_ID1 USER_ID2 USER_ID3 PASSWORD [--outdir <dir>] [--help]' % __file__
@@ -41,6 +40,7 @@ user3 = args.user3
 passwd = args.passwd
 outdir = args.outdir
 
+log.info("start")
 log.info("user_id=%s-%s-%s" % (user1,user2,user3))
 log.info("outdir={}".format(outdir))
 

@@ -51,3 +51,15 @@ echo `openssl rsautl -decrypt -inkey ~/.ssh/id_rsa -in secretfile`
 ## see also
 https://qiita.com/kugyu10/items/b27d99f6df67a3b6c348
 https://www.masatom.in/pukiwiki/Linux/%25B8%25F8%25B3%25AB%25B8%25B0%25B0%25C5%25B9%25E6/
+
+
+## TODO
+### SBI Crawler
+- 口座管理->保有証券>CSV
+- トータルリターン→CSV
+- 取引履歴→照会->CSV
+- 譲渡益税明細→照会→CSV
+- 外貨建口座→照会→CSV
+- 入出金・振替→入出金明細→CSV
+- 外貨入出金→CSV
+
