@@ -21,7 +21,7 @@ log_format = logging.Formatter("%(asctime)s %(levelname)s %(name)s %(message)s")
 h = logging.handlers.TimedRotatingFileHandler(os.path.join(LOGDIR,'%s.log' % ap_name),'D',2,13)
 h.setFormatter(log_format)
 log.addHandler(h)
-h = logging.StreamHandler()
+h = logging.StreamHandler(sys.stdout)
 #h.setFormatter(log_format)
 log.addHandler(h)
 
