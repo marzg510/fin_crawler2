@@ -23,7 +23,7 @@ log_format = logging.Formatter("%(asctime)s %(levelname)s %(name)s %(message)s")
 h = logging.handlers.TimedRotatingFileHandler(os.path.join(LOGDIR,'%s.log' % ap_name),'D',2,13)
 h.setFormatter(log_format)
 log.addHandler(h)
-h = logging.StreamHandler()
+h = logging.StreamHandler(sys.stdout)
 #h.setFormatter(log_format)
 log.addHandler(h)
 
@@ -47,6 +47,7 @@ try:
     log.info("outdir_ss={}".format(helper.outdir_ss))
     helper.set_download(args.outdir)
     helper.is_save_html_with_ss = True
+    driver.set_page_load_timeout(-1) # max timeout
 
     # ログイン画面
     log.info("getting SBI login page")
@@ -123,14 +124,21 @@ try:
 
     ############# show history
     log.info ("Show Transaction History")
-    # 約定日の年数を最も過去にする
-    e_sel = Select(driver.find_element_by_name('ref_from_yyyy'))
-    e_sel.select_by_index(len(e_sel.options)-1)
-    helper.ss(name='select-oldest-year')
+#    # 約定日の年数を最も過去にする
+#    e_sel = Select(driver.find_element_by_name('ref_from_yyyy'))
+#    e_sel.select_by_index(len(e_sel.options)-1)
+#    helper.ss(name='select-oldest-year')
     e_submit = driver.find_element_by_name('ACT_search')
     e_submit.click()
     helper.ss(name='show-tran-hist')
+    # ダウンロードしたファイル名を取り出す
 
+    ############# Download Transaction History CSV File
+    log.info ("Download Transaction History CSV")
+    e_csv = driver.find_element_by_xpath('//a[text()="CSVダウンロード"]')
+    log.debug('link for CSV : {} {} {} visible={}'.format(e_csv.tag_name, e_csv.get_attribute('href'),e_csv.text,e_csv.is_displayed()))
+    e_csv.click()
+    helper.ss(name='after-dl-tran-hist')
 
     exit()
 
