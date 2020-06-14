@@ -54,6 +54,13 @@ def set_download(outdir):
     }
     driver.execute("send_command", params=params)
 
+def get_downloaded_filename(outdir):
+    if len(os.listdir(outdir)) == 0:
+        return None
+    return max (
+        [os.path.join(outdir, f) for f in os.listdir(outdir)], key=os.path.getctime
+    )
+
 def ss(seq=None, name='ss'):
     '''
     スクリーンショットを撮る

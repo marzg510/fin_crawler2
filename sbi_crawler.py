@@ -89,7 +89,7 @@ try:
     e_csv.click()
     helper.ss(name='after-dl-owned-securities')
     # rename
-    time.sleep(10)
+    time.sleep(5)
     outfile=os.path.join(args.outdir,'owned_security_{0:%Y%m%d_%H%M%S}.csv'.format(datetime.datetime.now()))
     os.rename(os.path.join(args.outdir,'SaveFile.csv'),outfile)
     log.info ("rename file to {}".format(outfile))
@@ -131,7 +131,6 @@ try:
     e_submit = driver.find_element_by_name('ACT_search')
     e_submit.click()
     helper.ss(name='show-tran-hist')
-    # ダウンロードしたファイル名を取り出す
 
     ############# Download Transaction History CSV File
     log.info ("Download Transaction History CSV")
@@ -139,6 +138,13 @@ try:
     log.debug('link for CSV : {} {} {} visible={}'.format(e_csv.tag_name, e_csv.get_attribute('href'),e_csv.text,e_csv.is_displayed()))
     e_csv.click()
     helper.ss(name='after-dl-tran-hist')
+    time.sleep(5)
+    # ダウンロードしたファイル名を取り出す
+    newfile = 'SaveFile_tran_hist_{0:%Y%m%d_%H%M%S}.csv'.format(datetime.datetime.now())
+    fname = helper.get_downloaded_filename(args.outdir)
+    outfile=os.path.join(args.outdir,'owned_security_{0:%Y%m%d_%H%M%S}.csv'.format(datetime.datetime.now()))
+    os.rename(fname,os.path.join(args.outdir,newfile))
+    log.debug('donwloaded file name = {}, rename to {}'.format(fname,newfile))
 
     exit()
 
