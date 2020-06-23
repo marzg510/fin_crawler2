@@ -51,6 +51,7 @@ try:
     log.info("outdir_ss={}".format(helper.outdir_ss))
     helper.set_download(outdir)
     helper.is_save_html_with_ss = True
+    driver.set_page_load_timeout(60)
 
     # ログイン画面
     log.info("getting SMBC login page")
