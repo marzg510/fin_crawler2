@@ -47,7 +47,7 @@ try:
 
     # ログイン画面
     log.info("getting login page")
-    url = 'https://www.aeon.co.jp/NetBranch/view.do'
+    url = 'https://www.aeon.co.jp/app/'
     log.info("login page url="+url)
     driver.get(url)
     helper.ss(name='aeon_login')
@@ -56,8 +56,9 @@ try:
 
     # ログイン
     log.info("logging in to the site...")
-    e_user = driver.find_element_by_name('netMemberId')
-    e_password = driver.find_element_by_name('password')
+#    e_user = driver.find_element_by_name('netMemberId')
+    e_user = driver.find_element_by_id('username')
+#    e_password = driver.find_element_by_name('password')
     e_user.send_keys(user_id)
     e_password.send_keys(passwd)
     e_button = driver.find_element_by_xpath('//button[@type="submit"]')
@@ -145,6 +146,11 @@ try:
         for l in e_latest_bill.text.splitlines():
             log.debug(l)
             out.write(l+'\n')
+
+except:
+    log.exception('exception occurred.')
+    import traceback;
+    traceback.print_exc(file=sys.stderr)
 
 finally:
     if ( driver is not None ):
