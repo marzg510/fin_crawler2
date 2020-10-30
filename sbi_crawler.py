@@ -133,20 +133,22 @@ try:
     helper.ss(name='show-tran-hist')
 
     ############# Download Transaction History CSV File
-    log.info ("Download Transaction History CSV")
-    e_csv = driver.find_element_by_xpath('//a[text()="CSVダウンロード"]')
-    log.debug('link for CSV : {} {} {} visible={}'.format(e_csv.tag_name, e_csv.get_attribute('href'),e_csv.text,e_csv.is_displayed()))
-    e_csv.click()
-    helper.ss(name='after-dl-tran-hist')
-    time.sleep(5)
-    # ダウンロードしたファイル名を取り出す
-    newfile = 'SaveFile_tran_hist_{0:%Y%m%d_%H%M%S}.csv'.format(datetime.datetime.now())
-    fname = helper.get_downloaded_filename(args.outdir)
-    outfile=os.path.join(args.outdir,'owned_security_{0:%Y%m%d_%H%M%S}.csv'.format(datetime.datetime.now()))
-    os.rename(fname,os.path.join(args.outdir,newfile))
-    log.debug('donwloaded file name = {}, rename to {}'.format(fname,newfile))
-
-    exit()
+    log.info("Download Transaction History CSV")
+    # 履歴があるかチェック
+    if driver.page_source.find('指定された条件での約定履歴は見つかりませんでした') > 0:
+        log.info('no transaction history csv')
+    else:
+        e_csv = driver.find_element_by_xpath('//a[text()="CSVダウンロード"]')
+        log.debug('link for CSV : {} {} {} visible={}'.format(e_csv.tag_name, e_csv.get_attribute('href'),e_csv.text,e_csv.is_displayed()))
+        e_csv.click()
+        helper.ss(name='after-dl-tran-hist')
+        time.sleep(5)
+        # ダウンロードしたファイル名を取り出す
+        newfile = 'SaveFile_tran_hist_{0:%Y%m%d_%H%M%S}.csv'.format(datetime.datetime.now())
+        fname = helper.get_downloaded_filename(args.outdir)
+        outfile = os.path.join(args.outdir, 'owned_security_{0:%Y%m%d_%H%M%S}.csv'.format(datetime.datetime.now()))
+        os.rename(fname, os.path.join(args.outdir, newfile))
+        log.debug('donwloaded file name = {}, rename to {}'.format(fname,newfile))
 
 finally:
     if ( driver is not None ):
@@ -155,4 +157,3 @@ finally:
     log.info("end")
 
 exit()
-
