@@ -129,7 +129,8 @@ dmypy.json
 .pyre/
 
 #
-file/ss*/*.png
+file/*/*.png
+logs/*/*.png
 file/ss*/*.html
 file/ss*/otp
 log/*.log*
@@ -140,4 +141,8 @@ test-*
 mtest*
 file/ss*/*/
 test_*
+test.ipynb
 .vscode/launch.json
+file/ss_visa/
+logs/*
+!.keep
