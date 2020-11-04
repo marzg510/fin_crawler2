@@ -37,7 +37,8 @@ driver = None
 
 # 処理開始
 try:
-    helper.user_agent='Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; Touch; rv:11.0) like Gecko'
+#    helper.user_agent = 'Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko'
+    helper.user_agent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36'
     driver = helper.start_browser()
     helper.outdir_ss = OUTDIR_SS
     helper.set_download(outdir)
@@ -60,6 +61,7 @@ try:
 
     # ログイン
     log.info("logging in to the site...")
+    time.sleep(5)
 #    e_user = driver.find_element_by_name('netMemberId')
     e_user = driver.find_element_by_id('username')
 #    e_password = driver.find_element_by_name('password')
@@ -115,7 +117,6 @@ try:
             log.error(l)
         log.error("error end")
         sys.exit(9)
-
 
     # 最近のご利用金額
     log.info("getting latest bill..")
@@ -184,13 +185,14 @@ try:
 #    helper.ss(name='latest_month')
 
 
-except:
+except Exception as e:
     log.exception('exception occurred.')
-    import traceback;
-    traceback.print_exc(file=sys.stderr)
+    print(e, file=sys.stderr)
+#    import traceback
+#    traceback.print_exc(file=sys.stderr)
 
 finally:
-    if ( driver is not None ):
+    if (driver is not None):
         driver.quit()
         log.info("WebDriver Quit")
     log.info("end")
