@@ -94,8 +94,11 @@ try:
 
     ############# confirm message
     log.info ("confirming message")
-    e_next = driver.find_element_by_xpath('//input[@type="button" and @name="imgNext.y"]')
-    e_next.click()
+    try:
+        e_next = driver.find_element_by_xpath('//input[@type="button" and @name="imgNext.y"]')
+        e_next.click()
+    except Exception:
+        log.exception('exception occurred,but coutinueing process.')
     helper.ss(name='smbc-top-after-confirm')
 
     ############# Navigate to Detail page
@@ -119,6 +122,10 @@ try:
     time.sleep(10)
     os.rename(os.path.join(outdir,'meisai.csv'),outfile)
     log.info ("rename file to {}".format(outfile))
+
+except Exception as e:
+    log.exception('exception occurred.')
+    print(e, file=sys.stderr)
 
 finally:
     if ( driver is not None ):
