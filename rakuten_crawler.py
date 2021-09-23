@@ -11,18 +11,20 @@ OUTDIR_SS='./file/ss/'
 OUTDIR='./file/'
 LOGDIR='./log/'
 
+
 def write_future_expence(driver, outdir):
     global log
     log.info("write furure expence to %s" % outdir)
-    e_month = driver.find_element_by_xpath('//div[@class="stmt-calendar__cmd__now"]')
+    e_month = driver.find_element_by_xpath('//div[@id="js-payment-calendar"]')
     log.debug('month : tag={} text={}'.format(e_month.tag_name, e_month.text))
-    e_bill = driver.find_element_by_xpath('//div[@class="stmt-bill-info-amount__main"]')
+    e_bill = driver.find_element_by_xpath('//div[@class="stmt-about-payment__money__main"]')
     e_mark = e_bill.find_element_by_xpath('mark')
     log.debug('mark : tag={} text={}'.format(e_mark.tag_name, e_mark.text))
-    e_amount = e_bill.find_element_by_xpath('div[@class="stmt-bill-info-amount__num"]')
+    e_amount = e_bill.find_element_by_xpath('div[@class="stmt-about-payment__money__main__num"]')
     log.debug('amount : tag={} text={}'.format(e_amount.tag_name, e_amount.text))
-    with open(os.path.join(outdir,'%s_%s.txt' % (e_month.text,e_mark.text)), 'wt') as fout:
+    with open(os.path.join(outdir, '%s_%s.txt' % (e_month.text, e_mark.text)), 'wt') as fout:
         fout.write(e_amount.text)
+
 
 # ログ設定
 ap_name = os.path.splitext(os.path.basename(__file__))[0]
@@ -83,7 +85,7 @@ try:
 
     # 確定かどうか判定
     #e_bill = driver.find_element_by_xpath('//div[@class="stmt-bill-info-amount__main"]/span[contains(@class,"mark")]')
-    e_bill = driver.find_element_by_xpath('//div[@class="stmt-bill-info-amount__main"]/*[contains(@class,"mark")]')
+    e_bill = driver.find_element_by_xpath('//div[@class="stmt-about-payment__money__main"]')
     log.debug('bill-text:{}'.format(e_bill.text))
 
     # 未確定なら支払い予定額を保存
