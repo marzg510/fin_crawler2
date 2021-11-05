@@ -8,6 +8,7 @@ from argparse import ArgumentParser
 import selenium_helper as helper
 import time
 import selenium.common.exceptions
+from selenium.webdriver.common.by import By
 
 OUTDIR_SS = './file/ss_smbc'
 OUTDIR = './file/'
@@ -72,7 +73,8 @@ try:
     # ログイン
     log.info("logging in to the site...")
 
-    e_tab = driver.find_element_by_id('tab-switchB02')
+    e_tab = driver.find_element(by=By.ID, value='tab-switchB02')
+    print(type(e_tab))
     e_tab.click()
     time.sleep(1)
     helper.ss(name='smbc_login_tab_clicked')
