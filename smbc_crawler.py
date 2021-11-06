@@ -63,7 +63,7 @@ try:
 
     # ############# system maintainance check
     try:
-        e_sorry = driver.find_element_by_css_selector('div#sorry')
+        e_sorry = driver.find_element(By.CSS_SELECTOR, 'div#sorry')
         log.error("システムメンテナンス中")
         log.error("error end")
         sys.exit(9)
@@ -73,30 +73,25 @@ try:
     # ログイン
     log.info("logging in to the site...")
 
-    e_tab = driver.find_element(by=By.ID, value='tab-switchB02')
-    print(type(e_tab))
+    e_tab = driver.find_element(By.ID, 'tab-switchB02')
     e_tab.click()
     time.sleep(1)
     helper.ss(name='smbc_login_tab_clicked')
 
-    e_user1 = driver.find_element_by_name('userId1')
-    e_user2 = driver.find_element_by_name('userId2')
-    e_password = driver.find_element_by_id('inputpassword')
-    # e_type = driver.find_element_by_id('LOGIN_TYPE')
+    e_user1 = driver.find_element(By.NAME, 'userId1')
+    e_user2 = driver.find_element(By.NAME, 'userId2')
+    e_password = driver.find_element(By.ID, 'inputpassword')
     e_user1.send_keys(user1)
     e_user2.send_keys(user2)
     e_password.send_keys(passwd)
-    # driver.execute_script('var e = arguments[0];var v = arguments[1];e.value = v;',
-                        #    e_type, '0')
     helper.ss(name='before-login')
-    e_submit = driver.find_element_by_xpath("//div[@class='btn-wrap']/a[.='ログイン']")
-    # e_submit = driver.find_element_by_xpath('//input[@type="submit" and @name="bLogon.y"]')
+    e_submit = driver.find_element(By.XPATH, "//div[@class='btn-wrap']/a[.='ログイン']")
     e_submit.click()
     time.sleep(3)
     helper.ss(name='after-login')
 
     # ############ login check
-    e_errs = driver.find_elements_by_xpath("//dt[@class='title' and contains(text(),'エラーコード')]")
+    e_errs = driver.find_elements(By.XPATH, "//dt[@class='title' and contains(text(),'エラーコード')]")
     if len(e_errs) > 0:
         log.error("login failure")
         for err in e_errs:
@@ -105,16 +100,16 @@ try:
 
     # ############ confirm message
     log.info("confirming message")
-    try:
-        e_next = driver.find_element_by_xpath('//input[@type="button" and @name="imgNext.y"]')
+    e_next = driver.find_elements(By.XPATH, '//input[@type="button" and @name="imgNext.y"]')
+    if e_next:
         e_next.click()
-    except Exception:
-        log.exception('exception occurred,but coutinueing process.')
+    else:
+        log.info("no messages to confirm")
     helper.ss(name='smbc-top-after-confirm')
 
     # ############ Navigate to Detail page
     log.info("Navigate to Detail page")
-    e_link = driver.find_element_by_xpath("//a[contains(.,'{}')]".format(account))
+    e_link = driver.find_element(By.XPATH, "//a[contains(.,'{}')]".format(account))
     log.debug('link for detail : tag={} href={} visible={}'.format(e_link.tag_name, e_link.get_attribute('href'), e_link.is_displayed()))
     e_link.click()
     time.sleep(1)
@@ -122,7 +117,7 @@ try:
 
     # ############ Download CSV file
     log.info("Downloading")
-    e_csv = driver.find_element_by_xpath("//a[contains(.,'明細をCSVダウンロード')]")
+    e_csv = driver.find_element(By.XPATH, "//a[contains(.,'明細をCSVダウンロード')]")
     log.debug('link for csv : tag={} href={} visible={}'.format(e_csv.tag_name, e_csv.get_attribute('href'),e_csv.is_displayed()))
     e_csv.click()
     log.info("finish file writing to {}".format(outdir))
