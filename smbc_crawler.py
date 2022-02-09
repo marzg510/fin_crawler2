@@ -100,16 +100,16 @@ try:
 
     # ############ confirm message
     log.info("confirming message")
-    e_next = driver.find_elements(By.XPATH, '//input[@type="button" and @name="imgNext.y"]')
+    e_next = driver.find_elements(By.XPATH, '//span[text()="確認して次へ"]/..')
     if e_next:
-        e_next.click()
+        e_next[0].click()
     else:
         log.info("no messages to confirm")
     helper.ss(name='smbc-top-after-confirm')
 
     # ############ Navigate to Detail page
     log.info("Navigate to Detail page")
-    e_link = driver.find_element(By.XPATH, "//a[contains(.,'{}')]".format(account))
+    e_link = driver.find_element(By.XPATH, "//a[contains(@onclick,'{}')]".format(account))
     log.debug('link for detail : tag={} href={} visible={}'.format(e_link.tag_name, e_link.get_attribute('href'), e_link.is_displayed()))
     e_link.click()
     time.sleep(1)
