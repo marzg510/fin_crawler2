@@ -124,7 +124,7 @@ try:
     helper.ss(name='after-csv-downloaded')
 
     # rename
-    time.sleep(10)
+    time.sleep(30)
     os.rename(os.path.join(outdir, 'meisai.csv'), outfile)
     log.info("rename file to {}".format(outfile))
 
