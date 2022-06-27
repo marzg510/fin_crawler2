@@ -46,6 +46,7 @@ try:
     driver = helper.start_browser()
     helper.outdir_ss = OUTDIR_SS
     helper.set_download(outdir)
+    driver.set_page_load_timeout(30)
 
     # VIEW's NET TOP
     log.info("getting VIEW's NET top page")
