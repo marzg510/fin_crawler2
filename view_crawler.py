@@ -45,6 +45,7 @@ log.info("outdir_ss={}".format(helper.outdir_ss))
 try:
     driver = helper.start_browser()
     helper.outdir_ss = OUTDIR_SS
+    helper.is_save_html_with_ss = True
     helper.set_download(outdir)
     driver.set_page_load_timeout(180)
 
